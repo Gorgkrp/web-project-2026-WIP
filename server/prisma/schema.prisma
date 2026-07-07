@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  name      String
+  email     String    @unique
+  password  String
+  role      Role      @default(USER)
+  credits   Int       @default(5)
+  isBanned  Boolean   @default(false)
+  createdAt DateTime  @default(now())
+  
+  
+  sentRequests     MealRequest[] @relation("RequesterRequests")
+  receivedRequests MealRequest[] @relation("ProviderRequests") 
+
+  listings  Listing[]
+}
+
+model Listing {
+  id             Int      @id @default(autoincrement())
+  title          String
+  description    String
+  portions       Int
+  pickupLocation String
+  pickupTime     String
+  status         String   @default("ACTIVE")
+  
+  
+  createdAt      DateTime @default(now())
+  expiresAt DateTime?
+
+  requests MealRequest[]
+
+  userId         Int
+  user           User     @relation(fields: [userId], references: [id])
+}
+
+model MealRequest {
+  id        Int           @id @default(autoincrement())
+  status    RequestStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+
+  listingId Int
+  listing   Listing       @relation(fields: [listingId], references: [id])
+
+  requesterId Int
+  requester   User        @relation("RequesterRequests", fields: [requesterId], references: [id])
+
+  providerId Int
+  provider   User        @relation("ProviderRequests", fields: [providerId], references: [id])
+  rating Int?
+  ratedAt DateTime?
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  PICKED_UP
+  NO_SHOW
+}
+
+enum Role {
+  USER
+  ADMIN
+}
