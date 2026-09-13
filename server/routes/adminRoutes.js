@@ -5,6 +5,10 @@ const adminMiddleware = require("../middleware/adminMiddleware");
 
 const router = express.Router();
 
+/* =========================================================
+   ADMIN STATS
+========================================================= */
+
 router.get("/stats", authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const usersCount = await prisma.user.count();
@@ -29,6 +33,10 @@ router.get("/stats", authMiddleware, adminMiddleware, async (req, res) => {
     });
   }
 });
+
+/* =========================================================
+   GET USERS
+========================================================= */
 
 router.get("/users", authMiddleware, adminMiddleware, async (req, res) => {
   try {
@@ -57,6 +65,10 @@ router.get("/users", authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
+/* =========================================================
+   GET LISTINGS
+========================================================= */
+
 router.get("/listings", authMiddleware, adminMiddleware, async (req, res) => {
   try {
     const listings = await prisma.listing.findMany({
@@ -66,7 +78,6 @@ router.get("/listings", authMiddleware, adminMiddleware, async (req, res) => {
             id: true,
             name: true,
             email: true,
-            
           },
         },
       },
@@ -84,80 +95,195 @@ router.get("/listings", authMiddleware, adminMiddleware, async (req, res) => {
     });
   }
 });
-router.delete("/listings/:id", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-   
-    console.log("DELETE ROUTE HIT");
-    console.log(req.params.id);
-    const listingId = Number(req.params.id);
-    await prisma.listing.delete({
-      where: {
-        id: listingId,
-      },
-    });
 
-    res.json({
-      message: "Listing deleted",
-    });
-  } catch (error) {
-    console.log(error);
+/* =========================================================
+   DELETE LISTING
+========================================================= */
 
-    res.status(500).json({
-      message: "Server error",
-    });
+router.delete(
+  "/listings/:id",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const listingId = Number(req.params.id);
+
+      await prisma.listing.delete({
+        where: {
+          id: listingId,
+        },
+      });
+
+      res.json({
+        message: "Listing deleted",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Server error",
+      });
+    }
   }
-});
-router.patch("/users/:id/ban", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
+);
 
-    const userId = Number(req.params.id);
+/* =========================================================
+   BAN USER
+========================================================= */
 
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isBanned: true,
-      },
-    });
+router.patch(
+  "/users/:id/ban",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const userId = Number(req.params.id);
 
-    res.json({
-      message: "User banned",
-    });
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isBanned: true,
+        },
+      });
 
-  } catch (error) {
+      res.json({
+        message: "User banned",
+      });
+    } catch (error) {
+      console.log(error);
 
-    console.log(error);
-
-    res.status(500).json({
-      message: "Server error",
-    });
+      res.status(500).json({
+        message: "Server error",
+      });
+    }
   }
-});
+);
 
-router.patch("/users/:id/unban", authMiddleware, adminMiddleware, async (req, res) => {
-  try {
-    const userId = Number(req.params.id);
+/* =========================================================
+   UNBAN USER
+========================================================= */
 
-    await prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        isBanned: false,
-      },
-    });
+router.patch(
+  "/users/:id/unban",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const userId = Number(req.params.id);
 
-    res.json({
-      message: "User unbanned",
-    });
-  } catch (error) {
-    console.log(error);
+      await prisma.user.update({
+        where: {
+          id: userId,
+        },
+        data: {
+          isBanned: false,
+        },
+      });
 
-    res.status(500).json({
-      message: "Server error",
-    });
+      res.json({
+        message: "User unbanned",
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Server error",
+      });
+    }
   }
-});
+);
+
+/* =========================================================
+   COOK OF THE MONTH
+========================================================= */
+
+router.get(
+  "/cook-of-the-month",
+  authMiddleware,
+  adminMiddleware,
+  async (req, res) => {
+    try {
+      const startOfMonth = new Date();
+      startOfMonth.setDate(1);
+      startOfMonth.setHours(0, 0, 0, 0);
+
+      const requests = await prisma.mealRequest.findMany({
+        where: {
+          status: "PICKED_UP",
+          rating: {
+            not: null,
+          },
+          ratedAt: {
+            gte: startOfMonth,
+          },
+        },
+        select: {
+          providerId: true,
+          rating: true,
+          provider: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              credits: true,
+            },
+          },
+        },
+      });
+
+      if (requests.length === 0) {
+        return res.json({
+          cook: null,
+          message: "No ratings available for this month",
+        });
+      }
+
+      const stats = {};
+
+      for (const request of requests) {
+        const providerId = request.providerId;
+
+        if (!stats[providerId]) {
+          stats[providerId] = {
+            provider: request.provider,
+            totalRating: 0,
+            ratingsCount: 0,
+          };
+        }
+
+        stats[providerId].totalRating += request.rating;
+        stats[providerId].ratingsCount += 1;
+      }
+
+      const cooks = Object.values(stats).map((item) => ({
+        provider: item.provider,
+        ratingsCount: item.ratingsCount,
+        averageRating: Number(
+          (item.totalRating / item.ratingsCount).toFixed(2)
+        ),
+      }));
+
+      cooks.sort((a, b) => {
+        if (b.averageRating !== a.averageRating) {
+          return b.averageRating - a.averageRating;
+        }
+
+        return b.ratingsCount - a.ratingsCount;
+      });
+
+      res.json({
+        cook: cooks[0],
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Server error",
+      });
+    }
+  }
+);
 
 module.exports = router;

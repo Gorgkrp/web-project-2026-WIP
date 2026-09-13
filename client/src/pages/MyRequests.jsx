@@ -20,7 +20,7 @@ function MyRequests() {
 
     const data = await response.json();
 
-    setRequests(data);
+    setRequests(data.requests || []);
   };
 
   const handleRatingChange = (requestId, value) => {

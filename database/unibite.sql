@@ -41,7 +41,7 @@ CREATE TABLE `_prisma_migrations` (
 
 LOCK TABLES `_prisma_migrations` WRITE;
 /*!40000 ALTER TABLE `_prisma_migrations` DISABLE KEYS */;
-INSERT INTO `_prisma_migrations` VALUES ('22bf14af-bd8a-43e9-b8ba-1ead65a56aaf','1c3cc744d81b267b2f65b41ca5b1dafdfd2d87351984783748e1ceb8cf6d5274','2026-05-23 18:08:11.448','20260523180811_add_user_ban',NULL,NULL,'2026-05-23 18:08:11.375',1),('2c0cf5a7-9e67-4126-9b8e-cdac55b413f7','eb2f47971d0b17ab1e41396d11030bf763bdfffc1c0bf26c9c645fcef25ccf30','2026-05-20 12:50:57.409','20260520125057_init',NULL,NULL,'2026-05-20 12:50:57.363',1),('793a8889-67bf-4022-9e2f-32c4af0e59f1','28f6954e267b9d3d923190b98370bb069311d2be2842f707c4c51f010c52ade2','2026-06-08 14:51:50.607','20260608145150_add_meal_requests',NULL,NULL,'2026-06-08 14:51:50.390',1),('7b33d49c-858a-4ce9-b0c8-4b078ca7daf3','e0acefa9bb85e9e81cc15ba70343b6f5b47d50ec18e963a853df95bde1a3ca50','2026-05-23 18:14:08.590','20260523181408_add_user_ban',NULL,NULL,'2026-05-23 18:14:08.521',1),('82185698-1815-4b26-80b2-0ff3c673a56c','6d6ba9232497910b745acd1e403a10dab3692eb87f99406f6cc925199202ad26','2026-05-21 15:39:38.368','20260521153938_add_listings',NULL,NULL,'2026-05-21 15:39:38.224',1),('8653693b-ceea-4c32-867b-3036c60c45a8','b47f68e8858f89ab097c7d85ea0df5f0863939664ad97df58e8176e9f973281c','2026-06-12 14:39:32.272','20260612143931_add_request_rating',NULL,NULL,'2026-06-12 14:39:32.233',1),('a0490796-58df-4d40-8911-1d564accd351','90e3f6dfee89743e68709f6582e05bceb3ba10e9520a4bd38be233209c043b9a','2026-06-11 15:19:45.582','20260611151945_add_listing_expiration',NULL,NULL,'2026-06-11 15:19:45.556',1),('dfec43eb-18ac-4617-aaae-b990fb42bcba','47afdb4330e55d6da4d19bfd02f5e570f22866a9509aa43d5333875a9adb7354','2026-06-12 14:18:26.572','20260612141826_add_request_rating',NULL,NULL,'2026-06-12 14:18:26.539',1);
+INSERT INTO `_prisma_migrations` VALUES ('22bf14af-bd8a-43e9-b8ba-1ead65a56aaf','1c3cc744d81b267b2f65b41ca5b1dafdfd2d87351984783748e1ceb8cf6d5274','2026-05-23 18:08:11.448','20260523180811_add_user_ban',NULL,NULL,'2026-05-23 18:08:11.375',1),('2c0cf5a7-9e67-4126-9b8e-cdac55b413f7','eb2f47971d0b17ab1e41396d11030bf763bdfffc1c0bf26c9c645fcef25ccf30','2026-05-20 12:50:57.409','20260520125057_init',NULL,NULL,'2026-05-20 12:50:57.363',1),('61897f05-4286-4b2d-9d06-d9b2cb765ecc','b99ceffe15779f46af9869fb45604cb3b1195358ddce78e43c80aeb2ffd3550a','2026-09-13 05:56:10.850','20260913055609_npx_prisma_migrate_dev_name_sync_latest_schema',NULL,NULL,'2026-09-13 05:56:10.807',1),('793a8889-67bf-4022-9e2f-32c4af0e59f1','28f6954e267b9d3d923190b98370bb069311d2be2842f707c4c51f010c52ade2','2026-06-08 14:51:50.607','20260608145150_add_meal_requests',NULL,NULL,'2026-06-08 14:51:50.390',1),('7b33d49c-858a-4ce9-b0c8-4b078ca7daf3','e0acefa9bb85e9e81cc15ba70343b6f5b47d50ec18e963a853df95bde1a3ca50','2026-05-23 18:14:08.590','20260523181408_add_user_ban',NULL,NULL,'2026-05-23 18:14:08.521',1),('82185698-1815-4b26-80b2-0ff3c673a56c','6d6ba9232497910b745acd1e403a10dab3692eb87f99406f6cc925199202ad26','2026-05-21 15:39:38.368','20260521153938_add_listings',NULL,NULL,'2026-05-21 15:39:38.224',1),('8653693b-ceea-4c32-867b-3036c60c45a8','b47f68e8858f89ab097c7d85ea0df5f0863939664ad97df58e8176e9f973281c','2026-06-12 14:39:32.272','20260612143931_add_request_rating',NULL,NULL,'2026-06-12 14:39:32.233',1),('a0490796-58df-4d40-8911-1d564accd351','90e3f6dfee89743e68709f6582e05bceb3ba10e9520a4bd38be233209c043b9a','2026-06-11 15:19:45.582','20260611151945_add_listing_expiration',NULL,NULL,'2026-06-11 15:19:45.556',1),('dfec43eb-18ac-4617-aaae-b990fb42bcba','47afdb4330e55d6da4d19bfd02f5e570f22866a9509aa43d5333875a9adb7354','2026-06-12 14:18:26.572','20260612141826_add_request_rating',NULL,NULL,'2026-06-12 14:18:26.539',1),('f4a8af2a-45d4-4a4a-8468-eaca5a75acf2','c32efa792c846f86017e1722ef0eb0940f094b40c233b520250cf7a78b417fff','2026-09-13 10:17:20.109','20260913101718_rework_points_system',NULL,NULL,'2026-09-13 10:17:20.061',1);
 /*!40000 ALTER TABLE `_prisma_migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,10 +63,12 @@ CREATE TABLE `listing` (
   `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `userId` int NOT NULL,
   `expiresAt` datetime(3) DEFAULT NULL,
+  `allergens` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `imageUrl` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Listing_userId_fkey` (`userId`),
   CONSTRAINT `Listing_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -75,7 +77,7 @@ CREATE TABLE `listing` (
 
 LOCK TABLES `listing` WRITE;
 /*!40000 ALTER TABLE `listing` DISABLE KEYS */;
-INSERT INTO `listing` VALUES (6,'Spaghetti Bolognese','Cheese and Minced Meatz',0,'Estia Entrance','19:00-20:00','ACTIVE','2026-06-07 20:15:43.698',5,NULL),(7,'Spaghetti Carbonara','Yk',0,'Estia Entrance','7-9.30','ACTIVE','2026-06-08 15:02:57.162',4,NULL),(8,'Kleftiko','Stolen',0,'Estia','7-9.30','ACTIVE','2026-06-11 14:17:02.824',5,NULL),(9,'Nigga balls','Balls of nigger',0,'Estia entrance','7-9.30','ACTIVE','2026-06-12 09:38:28.916',4,'2026-06-14 09:38:28.914');
+INSERT INTO `listing` VALUES (6,'Spaghetti Bolognese','Cheese and Minced Meatz',0,'Estia Entrance','19:00-20:00','ACTIVE','2026-06-07 20:15:43.698',5,NULL,NULL,NULL),(8,'Kleftiko','Stolen',0,'Estia','7-9.30','ACTIVE','2026-06-11 14:17:02.824',5,NULL,NULL,NULL),(9,'Nigga balls','Balls of nigger',0,'Estia entrance','7-9.30','INACTIVE','2026-06-12 09:38:28.916',4,'2026-06-14 09:38:28.914',NULL,NULL);
 /*!40000 ALTER TABLE `listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,6 +97,9 @@ CREATE TABLE `mealrequest` (
   `providerId` int NOT NULL,
   `ratedAt` datetime(3) DEFAULT NULL,
   `rating` int DEFAULT NULL,
+  `pickedUpAt` datetime(3) DEFAULT NULL,
+  `reviewDeadline` datetime(3) DEFAULT NULL,
+  `reviewPenaltyApplied` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `MealRequest_listingId_fkey` (`listingId`),
   KEY `MealRequest_requesterId_fkey` (`requesterId`),
@@ -111,7 +116,7 @@ CREATE TABLE `mealrequest` (
 
 LOCK TABLES `mealrequest` WRITE;
 /*!40000 ALTER TABLE `mealrequest` DISABLE KEYS */;
-INSERT INTO `mealrequest` VALUES (1,'REJECTED','2026-06-08 15:11:29.889',6,4,5,NULL,NULL),(2,'PICKED_UP','2026-06-11 12:48:41.961',6,4,5,'2026-06-12 14:40:10.898',5),(3,'NO_SHOW','2026-06-11 14:17:50.630',8,6,5,NULL,NULL),(4,'PICKED_UP','2026-06-11 15:40:46.451',8,4,5,'2026-06-12 14:40:06.408',1),(5,'PICKED_UP','2026-06-12 09:39:00.389',9,6,4,NULL,NULL);
+INSERT INTO `mealrequest` VALUES (1,'REJECTED','2026-06-08 15:11:29.889',6,4,5,NULL,NULL,NULL,NULL,0),(2,'PICKED_UP','2026-06-11 12:48:41.961',6,4,5,'2026-06-12 14:40:10.898',5,NULL,NULL,0),(3,'NO_SHOW','2026-06-11 14:17:50.630',8,6,5,NULL,NULL,NULL,NULL,0),(4,'PICKED_UP','2026-06-11 15:40:46.451',8,4,5,'2026-06-12 14:40:06.408',1,NULL,NULL,0),(5,'PICKED_UP','2026-06-12 09:39:00.389',9,6,4,NULL,NULL,NULL,NULL,0);
 /*!40000 ALTER TABLE `mealrequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -133,7 +138,7 @@ CREATE TABLE `user` (
   `isBanned` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `User_email_key` (`email`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -142,7 +147,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Grg','grg@test.com','$2b$10$ap.vpu8uILVCuc7CJU3EDurKFYGz84Fi6vSxXu4l5mZ3uqz1XS/DO','USER',5,'2026-05-21 14:54:49.628',0),(2,'Test User','test2@test.com','$2b$10$s1nKKKFfPMf9vCHtGGuu0eFlnYKrut2xitqbu48ocVexMCxrqPuUW','USER',5,'2026-05-21 14:56:43.305',0),(4,'gorge','giorgoskarpouzos04@gmail.com','$2b$10$ciOa8gw3EEmvIj0CjPfKu.QUo1vwvH/5ri0Ab7MP51k/zL6pS3MvO','USER',5,'2026-05-22 15:37:22.647',0),(5,'Admin','admin@test.com','$2b$10$CQmsTiTV6bUa3nv4VJ012O0VRtQiOT079jKWnZJ5I8Qbc7PDe2BB6','ADMIN',9,'2026-05-23 17:10:10.441',0),(6,'tester2','tester@test.com','$2b$10$Bfj1qD.j/73GjsImN/0fJeWHA202XxLCwIm98UioiSkohESFwy9ai','USER',4,'2026-06-11 14:17:37.972',0);
+INSERT INTO `user` VALUES (1,'Grg','grg@test.com','$2b$10$ap.vpu8uILVCuc7CJU3EDurKFYGz84Fi6vSxXu4l5mZ3uqz1XS/DO','USER',5,'2026-05-21 14:54:49.628',0),(2,'Test User','test2@test.com','$2b$10$s1nKKKFfPMf9vCHtGGuu0eFlnYKrut2xitqbu48ocVexMCxrqPuUW','USER',5,'2026-05-21 14:56:43.305',0),(4,'gorge','giorgoskarpouzos04@gmail.com','$2b$10$ciOa8gw3EEmvIj0CjPfKu.QUo1vwvH/5ri0Ab7MP51k/zL6pS3MvO','USER',5,'2026-05-22 15:37:22.647',0),(5,'Admin','admin@test.com','$2b$10$CQmsTiTV6bUa3nv4VJ012O0VRtQiOT079jKWnZJ5I8Qbc7PDe2BB6','ADMIN',9,'2026-05-23 17:10:10.441',0),(6,'tester2','tester@test.com','$2b$10$Bfj1qD.j/73GjsImN/0fJeWHA202XxLCwIm98UioiSkohESFwy9ai','USER',4,'2026-06-11 14:17:37.972',0),(7,'Γιώργος Καρπούζος','tester@test2.com','$2b$10$xppFDDx.LGknH1CG9NYsEuCUNs1jidGHbUYToFhUe541IcPo.KiSC','USER',5,'2026-09-13 05:46:55.059',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -155,4 +160,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-11 20:55:09
+-- Dump completed on 2026-09-13 13:31:02

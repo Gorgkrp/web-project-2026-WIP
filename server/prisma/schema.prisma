@@ -8,40 +8,37 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
-  email     String    @unique
+  email     String   @unique
   password  String
-  role      Role      @default(USER)
-  credits   Int       @default(5)
-  isBanned  Boolean   @default(false)
-  createdAt DateTime  @default(now())
-  
-  
-  sentRequests     MealRequest[] @relation("RequesterRequests")
-  receivedRequests MealRequest[] @relation("ProviderRequests") 
+  role      Role     @default(USER)
+  credits   Int      @default(5)
+  isBanned  Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  listings  Listing[]
+  listings         Listing[]
+  sentRequests     MealRequest[] @relation("RequesterRequests")
+  receivedRequests MealRequest[] @relation("ProviderRequests")
 }
 
 model Listing {
-  id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   title          String
   description    String
   portions       Int
   pickupLocation String
   pickupTime     String
-  status         String   @default("ACTIVE")
-  imageUrl   String?
-  allergens  String?
-  
-  createdAt      DateTime @default(now())
-  expiresAt DateTime?
+  status         String    @default("ACTIVE")
+  imageUrl       String?
+  allergens      String?
+  createdAt      DateTime  @default(now())
+  expiresAt      DateTime?
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
 
   requests MealRequest[]
-
-  userId         Int
-  user           User     @relation(fields: [userId], references: [id])
 }
 
 model MealRequest {
@@ -50,15 +47,20 @@ model MealRequest {
   createdAt DateTime      @default(now())
 
   listingId Int
-  listing   Listing       @relation(fields: [listingId], references: [id])
+  listing   Listing @relation(fields: [listingId], references: [id])
 
   requesterId Int
-  requester   User        @relation("RequesterRequests", fields: [requesterId], references: [id])
+  requester   User @relation("RequesterRequests", fields: [requesterId], references: [id])
 
   providerId Int
-  provider   User        @relation("ProviderRequests", fields: [providerId], references: [id])
-  rating Int?
+  provider   User @relation("ProviderRequests", fields: [providerId], references: [id])
+
+  rating  Int?
   ratedAt DateTime?
+
+  pickedUpAt           DateTime?
+  reviewDeadline       DateTime?
+  reviewPenaltyApplied Boolean   @default(false)
 }
 
 enum RequestStatus {
