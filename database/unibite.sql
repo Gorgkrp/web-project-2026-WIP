@@ -68,7 +68,7 @@ CREATE TABLE `listing` (
   PRIMARY KEY (`id`),
   KEY `Listing_userId_fkey` (`userId`),
   CONSTRAINT `Listing_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -77,7 +77,7 @@ CREATE TABLE `listing` (
 
 LOCK TABLES `listing` WRITE;
 /*!40000 ALTER TABLE `listing` DISABLE KEYS */;
-INSERT INTO `listing` VALUES (6,'Spaghetti Bolognese','Cheese and Minced Meatz',0,'Estia Entrance','19:00-20:00','ACTIVE','2026-06-07 20:15:43.698',5,NULL,NULL,NULL),(8,'Kleftiko','Stolen',0,'Estia','7-9.30','ACTIVE','2026-06-11 14:17:02.824',5,NULL,NULL,NULL),(9,'Nigga balls','Balls of nigger',0,'Estia entrance','7-9.30','INACTIVE','2026-06-12 09:38:28.916',4,'2026-06-14 09:38:28.914',NULL,NULL);
+INSERT INTO `listing` VALUES (12,'Carbonara','YK',0,'Estia Entrance','7-9.30','ACTIVE','2026-09-13 11:00:28.630',4,'2026-09-15 11:00:28.611','Milk, Eggs','/uploads/1789297228600-418854418.jpg');
 /*!40000 ALTER TABLE `listing` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -107,7 +107,7 @@ CREATE TABLE `mealrequest` (
   CONSTRAINT `MealRequest_listingId_fkey` FOREIGN KEY (`listingId`) REFERENCES `listing` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `MealRequest_providerId_fkey` FOREIGN KEY (`providerId`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   CONSTRAINT `MealRequest_requesterId_fkey` FOREIGN KEY (`requesterId`) REFERENCES `user` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -116,7 +116,7 @@ CREATE TABLE `mealrequest` (
 
 LOCK TABLES `mealrequest` WRITE;
 /*!40000 ALTER TABLE `mealrequest` DISABLE KEYS */;
-INSERT INTO `mealrequest` VALUES (1,'REJECTED','2026-06-08 15:11:29.889',6,4,5,NULL,NULL,NULL,NULL,0),(2,'PICKED_UP','2026-06-11 12:48:41.961',6,4,5,'2026-06-12 14:40:10.898',5,NULL,NULL,0),(3,'NO_SHOW','2026-06-11 14:17:50.630',8,6,5,NULL,NULL,NULL,NULL,0),(4,'PICKED_UP','2026-06-11 15:40:46.451',8,4,5,'2026-06-12 14:40:06.408',1,NULL,NULL,0),(5,'PICKED_UP','2026-06-12 09:39:00.389',9,6,4,NULL,NULL,NULL,NULL,0);
+INSERT INTO `mealrequest` VALUES (6,'PICKED_UP','2026-09-13 11:01:00.859',12,6,4,'2026-09-13 11:01:33.622',5,'2026-09-13 11:01:16.384','2026-09-15 11:01:16.384',0);
 /*!40000 ALTER TABLE `mealrequest` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -147,7 +147,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Grg','grg@test.com','$2b$10$ap.vpu8uILVCuc7CJU3EDurKFYGz84Fi6vSxXu4l5mZ3uqz1XS/DO','USER',5,'2026-05-21 14:54:49.628',0),(2,'Test User','test2@test.com','$2b$10$s1nKKKFfPMf9vCHtGGuu0eFlnYKrut2xitqbu48ocVexMCxrqPuUW','USER',5,'2026-05-21 14:56:43.305',0),(4,'gorge','giorgoskarpouzos04@gmail.com','$2b$10$ciOa8gw3EEmvIj0CjPfKu.QUo1vwvH/5ri0Ab7MP51k/zL6pS3MvO','USER',5,'2026-05-22 15:37:22.647',0),(5,'Admin','admin@test.com','$2b$10$CQmsTiTV6bUa3nv4VJ012O0VRtQiOT079jKWnZJ5I8Qbc7PDe2BB6','ADMIN',9,'2026-05-23 17:10:10.441',0),(6,'tester2','tester@test.com','$2b$10$Bfj1qD.j/73GjsImN/0fJeWHA202XxLCwIm98UioiSkohESFwy9ai','USER',4,'2026-06-11 14:17:37.972',0),(7,'Γιώργος Καρπούζος','tester@test2.com','$2b$10$xppFDDx.LGknH1CG9NYsEuCUNs1jidGHbUYToFhUe541IcPo.KiSC','USER',5,'2026-09-13 05:46:55.059',0);
+INSERT INTO `user` VALUES (1,'Grg','grg@test.com','$2b$10$ap.vpu8uILVCuc7CJU3EDurKFYGz84Fi6vSxXu4l5mZ3uqz1XS/DO','USER',5,'2026-05-21 14:54:49.628',0),(2,'Test User','test2@test.com','$2b$10$s1nKKKFfPMf9vCHtGGuu0eFlnYKrut2xitqbu48ocVexMCxrqPuUW','USER',5,'2026-05-21 14:56:43.305',0),(4,'gorge','giorgoskarpouzos04@gmail.com','$2b$10$ciOa8gw3EEmvIj0CjPfKu.QUo1vwvH/5ri0Ab7MP51k/zL6pS3MvO','USER',8,'2026-05-22 15:37:22.647',0),(5,'Admin','admin@test.com','$2b$10$CQmsTiTV6bUa3nv4VJ012O0VRtQiOT079jKWnZJ5I8Qbc7PDe2BB6','ADMIN',9,'2026-05-23 17:10:10.441',0),(6,'tester2','tester@test.com','$2b$10$Bfj1qD.j/73GjsImN/0fJeWHA202XxLCwIm98UioiSkohESFwy9ai','USER',3,'2026-06-11 14:17:37.972',0),(7,'Γιώργος Καρπούζος','tester@test2.com','$2b$10$xppFDDx.LGknH1CG9NYsEuCUNs1jidGHbUYToFhUe541IcPo.KiSC','USER',5,'2026-09-13 05:46:55.059',0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -160,4 +160,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-09-13 13:31:02
+-- Dump completed on 2026-09-13 16:21:28
