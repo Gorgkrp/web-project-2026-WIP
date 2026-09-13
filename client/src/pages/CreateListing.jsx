@@ -9,7 +9,21 @@ function CreateListing() {
     pickupTime: "",
   });
 
+  const [image, setImage] = useState(null);
+  const [selectedAllergens, setSelectedAllergens] = useState([]);
   const [message, setMessage] = useState("");
+
+  const allergensList = [
+    "Gluten",
+    "Milk",
+    "Eggs",
+    "Peanuts",
+    "Nuts",
+    "Soy",
+    "Fish",
+    "Shellfish",
+    "Sesame",
+  ];
 
   const handleChange = (e) => {
     setFormData({
@@ -18,84 +32,218 @@ function CreateListing() {
     });
   };
 
+  const handleAllergenChange = (allergen) => {
+    if (selectedAllergens.includes(allergen)) {
+      setSelectedAllergens(
+        selectedAllergens.filter(
+          (item) => item !== allergen
+        )
+      );
+    } else {
+      setSelectedAllergens([
+        ...selectedAllergens,
+        allergen,
+      ]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
 
-    const response = await fetch("http://localhost:3000/listings", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(formData),
-    });
+    const data = new FormData();
 
-    const data = await response.json();
+    data.append("title", formData.title);
+    data.append("description", formData.description);
+    data.append("portions", formData.portions);
+    data.append(
+      "pickupLocation",
+      formData.pickupLocation
+    );
+    data.append("pickupTime", formData.pickupTime);
 
-    console.log(data);
+    data.append(
+      "allergens",
+      selectedAllergens.join(", ")
+    );
 
-    setMessage(data.message);
+    if (image) {
+      data.append("image", image);
+    }
+
+    try {
+      const response = await fetch(
+        "http://localhost:3000/listings",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: data,
+        }
+      );
+
+      const result = await response.json();
+
+      setMessage(result.message);
+
+      if (response.ok) {
+        setFormData({
+          title: "",
+          description: "",
+          portions: 1,
+          pickupLocation: "",
+          pickupTime: "",
+        });
+
+        setImage(null);
+        setSelectedAllergens([]);
+      }
+    } catch (error) {
+      console.log(error);
+      setMessage("Could not create listing.");
+    }
   };
 
   return (
-    <div style={{ padding: "24px" }}>
-      <h1>Create Listing</h1>
+    <div className="page create-listing-page">
+      <div className="create-listing-header">
+        <span className="home-kicker">
+          Share with your community
+        </span>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="title"
-          placeholder="Food title"
-          value={formData.title}
-          onChange={handleChange}
-        />
+        <h1>Share a Meal</h1>
 
-        <br /><br />
+        <p>
+          Have an extra portion? Let another student
+          enjoy it instead of letting it go to waste.
+        </p>
+      </div>
 
-        <textarea
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-        />
+      <form
+        className="create-listing-form"
+        onSubmit={handleSubmit}
+      >
+        <div className="create-form-section">
+          <h2>Meal Details</h2>
 
-        <br /><br />
+          <label>Meal name</label>
+          <input
+            name="title"
+            placeholder="e.g. Spaghetti Bolognese"
+            value={formData.title}
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          name="portions"
-          type="number"
-          placeholder="Portions"
-          value={formData.portions}
-          onChange={handleChange}
-        />
+          <label>Description</label>
+          <textarea
+            name="description"
+            placeholder="Tell students about the meal..."
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
 
-        <br /><br />
+          <label>Available portions</label>
+          <input
+            name="portions"
+            type="number"
+            min="1"
+            value={formData.portions}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <input
-          name="pickupLocation"
-          placeholder="Pickup location"
-          value={formData.pickupLocation}
-          onChange={handleChange}
-        />
+        <div className="create-form-section">
+          <h2>Pickup Details</h2>
 
-        <br /><br />
+          <label>Pickup location</label>
+          <input
+            name="pickupLocation"
+            placeholder="e.g. Estia Building, Entrance A"
+            value={formData.pickupLocation}
+            onChange={handleChange}
+            required
+          />
 
-        <input
-          name="pickupTime"
-          placeholder="Pickup time"
-          value={formData.pickupTime}
-          onChange={handleChange}
-        />
+          <label>Pickup time</label>
+          <input
+            name="pickupTime"
+            placeholder="e.g. 19:00 - 20:00"
+            value={formData.pickupTime}
+            onChange={handleChange}
+            required
+          />
+        </div>
 
-        <br /><br />
+        <div className="create-form-section">
+          <h2>Meal Photo</h2>
 
-        <button type="submit">
-          Create Listing
+          <p>
+            Add a photo so students can see the meal.
+          </p>
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) =>
+              setImage(e.target.files[0])
+            }
+          />
+
+          {image && (
+            <img
+              className="image-preview"
+              src={URL.createObjectURL(image)}
+              alt="Meal preview"
+            />
+          )}
+        </div>
+
+        <div className="create-form-section">
+          <h2>Allergens</h2>
+
+          <p>
+            Select any known allergens contained in the
+            meal.
+          </p>
+
+          <div className="allergen-grid">
+            {allergensList.map((allergen) => (
+              <label
+                key={allergen}
+                className="allergen-option"
+              >
+                <input
+                  type="checkbox"
+                  checked={selectedAllergens.includes(
+                    allergen
+                  )}
+                  onChange={() =>
+                    handleAllergenChange(allergen)
+                  }
+                />
+
+                {allergen}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <button
+          type="submit"
+          className="create-listing-button"
+        >
+          Share Meal
         </button>
-      </form>
 
-      <p>{message}</p>
+        {message && (
+          <p className="message">{message}</p>
+        )}
+      </form>
     </div>
   );
 }

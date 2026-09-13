@@ -32,7 +32,8 @@ model Listing {
   pickupLocation String
   pickupTime     String
   status         String   @default("ACTIVE")
-  
+  imageUrl   String?
+  allergens  String?
   
   createdAt      DateTime @default(now())
   expiresAt DateTime?

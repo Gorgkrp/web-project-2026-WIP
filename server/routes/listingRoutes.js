@@ -1,37 +1,109 @@
 const express = require("express");
 const prisma = require("../lib/prisma");
 const authMiddleware = require("../middleware/authMiddleware");
+const multer = require("multer");
+const path = require("path");
 
 const router = express.Router();
 
-router.post("/", authMiddleware, async (req, res) => {
-  try {
-    const { title, description, portions, pickupLocation, pickupTime } = req.body;
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, "uploads/");
+  },
 
-    const listing = await prisma.listing.create({
-      data: {
+  filename: (req, file, cb) => {
+    const uniqueName =
+      Date.now() +
+      "-" +
+      Math.round(Math.random() * 1e9) +
+      path.extname(file.originalname);
+
+    cb(null, uniqueName);
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
+
+/* =========================================================
+   CREATE LISTING
+========================================================= */
+
+router.post(
+  "/",
+  authMiddleware,
+  upload.single("image"),
+  async (req, res) => {
+    try {
+      const {
         title,
         description,
-        portions: Number(portions),
+        portions,
         pickupLocation,
         pickupTime,
-        expiresAt: new Date(Date.now() + 48 * 60 * 60 * 1000),
-        userId: req.user.userId,
-      },
-    });
+        allergens,
+      } = req.body;
 
-    res.status(201).json({
-      message: "Listing created",
-      listing,
-    });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+      const imageUrl = req.file
+        ? `/uploads/${req.file.filename}`
+        : null;
+
+      const listing = await prisma.listing.create({
+        data: {
+          title,
+          description,
+          portions: Number(portions),
+          pickupLocation,
+          pickupTime,
+          allergens: allergens || null,
+          imageUrl,
+          expiresAt: new Date(
+            Date.now() + 48 * 60 * 60 * 1000
+          ),
+          userId: req.user.userId,
+        },
+      });
+
+      res.status(201).json({
+        message: "Listing created",
+        listing,
+      });
+    } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+        message: "Server error",
+      });
+    }
   }
-});
+);
+
+
+
+/* =========================================================
+   GET ACTIVE LISTINGS
+========================================================= */
 
 router.get("/", async (req, res) => {
   try {
+    const now = new Date();
+
+    await prisma.listing.updateMany({
+      where: {
+        status: "ACTIVE",
+        expiresAt: {
+          lte: now,
+        },
+      },
+      data: {
+        status: "INACTIVE",
+      },
+    });
+
     const listings = await prisma.listing.findMany({
       where: {
         status: "ACTIVE",
@@ -41,7 +113,7 @@ router.get("/", async (req, res) => {
         OR: [
           {
             expiresAt: {
-              gt: new Date(),
+              gt: now,
             },
           },
           {
@@ -69,6 +141,10 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+/* =========================================================
+   EDIT LISTING
+========================================================= */
 
 router.put("/:id", authMiddleware, async (req, res) => {
   try {
@@ -124,6 +200,10 @@ router.put("/:id", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+/* =========================================================
+   REQUEST PORTION
+========================================================= */
 
 router.post("/:id/request", authMiddleware, async (req, res) => {
   try {
@@ -197,6 +277,10 @@ router.post("/:id/request", authMiddleware, async (req, res) => {
   }
 });
 
+/* =========================================================
+   PROVIDER REQUESTS
+========================================================= */
+
 router.get("/requests/provider", authMiddleware, async (req, res) => {
   try {
     const requests = await prisma.mealRequest.findMany({
@@ -230,6 +314,10 @@ router.get("/requests/provider", authMiddleware, async (req, res) => {
   }
 });
 
+/* =========================================================
+   MY REQUESTS
+========================================================= */
+
 router.get("/requests/my", authMiddleware, async (req, res) => {
   try {
     const requests = await prisma.mealRequest.findMany({
@@ -262,6 +350,10 @@ router.get("/requests/my", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+/* =========================================================
+   APPROVE REQUEST
+========================================================= */
 
 router.patch("/requests/:id/approve", authMiddleware, async (req, res) => {
   try {
@@ -329,6 +421,10 @@ router.patch("/requests/:id/approve", authMiddleware, async (req, res) => {
   }
 });
 
+/* =========================================================
+   REJECT REQUEST
+========================================================= */
+
 router.patch("/requests/:id/reject", authMiddleware, async (req, res) => {
   try {
     const requestId = Number(req.params.id);
@@ -375,6 +471,10 @@ router.patch("/requests/:id/reject", authMiddleware, async (req, res) => {
   }
 });
 
+/* =========================================================
+   MARK AS PICKED UP
+========================================================= */
+
 router.patch("/requests/:id/picked-up", authMiddleware, async (req, res) => {
   try {
     const requestId = Number(req.params.id);
@@ -420,6 +520,10 @@ router.patch("/requests/:id/picked-up", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
+
+/* =========================================================
+   NO SHOW
+========================================================= */
 
 router.patch("/requests/:id/no-show", authMiddleware, async (req, res) => {
   try {
@@ -477,84 +581,10 @@ router.patch("/requests/:id/no-show", authMiddleware, async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 });
-router.patch("/requests/:id/rate", authMiddleware, async (req, res) => {
-  try {
-    const requestId = Number(req.params.id);
-    const { rating } = req.body;
 
-    const numericRating = Number(rating);
-
-    if (numericRating < 1 || numericRating > 5) {
-      return res.status(400).json({
-        message: "Rating must be between 1 and 5",
-      });
-    }
-
-    const request = await prisma.mealRequest.findUnique({
-      where: {
-        id: requestId,
-      },
-    });
-
-    if (!request) {
-      return res.status(404).json({
-        message: "Request not found",
-      });
-    }
-
-    if (request.requesterId !== req.user.userId) {
-      return res.status(403).json({
-        message: "Only the requester can rate this meal",
-      });
-    }
-
-    if (request.status !== "PICKED_UP") {
-      return res.status(400).json({
-        message: "Only picked up meals can be rated",
-      });
-    }
-
-    if (request.rating !== null) {
-      return res.status(400).json({
-        message: "This meal has already been rated",
-      });
-    }
-
-    const providerCreditReward = numericRating > 3 ? 2 : 1;
-
-    const updatedRequest = await prisma.mealRequest.update({
-      where: {
-        id: requestId,
-      },
-      data: {
-        rating: numericRating,
-        ratedAt: new Date(),
-      },
-    });
-
-    await prisma.user.update({
-      where: {
-        id: request.providerId,
-      },
-      data: {
-        credits: {
-          increment: providerCreditReward,
-        },
-      },
-    });
-
-    res.json({
-      message: `Meal rated successfully. Provider earned ${providerCreditReward} credits.`,
-      request: updatedRequest,
-    });
-  } catch (error) {
-    console.log(error);
-
-    res.status(500).json({
-      message: "Server error",
-    });
-  }
-});
+/* =========================================================
+   RATE MEAL
+========================================================= */
 
 router.patch("/requests/:id/rate", authMiddleware, async (req, res) => {
   try {
@@ -628,7 +658,6 @@ router.patch("/requests/:id/rate", authMiddleware, async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-
     res.status(500).json({
       message: "Server error",
     });

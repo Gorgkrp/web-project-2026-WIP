@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const adminRoutes = require("./routes/adminRoutes");
+const path = require("path");
 
 require("dotenv").config();
 
@@ -9,6 +10,10 @@ const listingRoutes = require("./routes/listingRoutes");
 const authMiddleware = require("./middleware/authMiddleware");
 
 const app = express();
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"))
+);
 
 app.use(
   cors({

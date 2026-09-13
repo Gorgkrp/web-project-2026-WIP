@@ -18,59 +18,69 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log("Login button clicked");
-    console.log(formData);
+    try {
+      const response = await fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    const response = await fetch("http://localhost:3000/auth/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+      const data = await response.json();
 
-    const data = await response.json();
+      if (!response.ok) {
+        setMessage(data.message || "Login failed");
+        return;
+      }
 
-    console.log(data);
-
-    if (data.token) {
       localStorage.setItem("token", data.token);
       localStorage.setItem("user", JSON.stringify(data.user));
-    }
 
-    setMessage(data.message);
+      setMessage("Login successful");
+
+      window.location.href = "/dashboard";
+    } catch (error) {
+      console.log(error);
+      setMessage("Could not connect to the server");
+    }
   };
 
   return (
-    <div style={{ padding: "24px" }}>
-      <h1>Login</h1>
+    <div className="page">
+      <div className="form">
+        <h1>Login</h1>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <input
+              type="email"
+              name="email"
+              placeholder="Email"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <br />
-        <br />
+          <div className="form-group">
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+          <button type="submit">
+            Login
+          </button>
+        </form>
 
-        <br />
-        <br />
-
-        <button type="submit">Login</button>
-      </form>
-
-      <p>{message}</p>
+        {message && <p className="message">{message}</p>}
+      </div>
     </div>
   );
 }
