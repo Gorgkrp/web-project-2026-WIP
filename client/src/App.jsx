@@ -1,4 +1,11 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Link,
+} from "react-router-dom";
+
 import Home from "./pages/Home.jsx";
 import AdminDashboard from "./pages/AdminDashboard.jsx";
 import Register from "./pages/Register.jsx";
@@ -10,7 +17,54 @@ import ProviderRequests from "./pages/ProviderRequests";
 import MyRequests from "./pages/MyRequests";
 
 function App() {
-  const currentUser = JSON.parse(localStorage.getItem("user"));
+  const [currentUser, setCurrentUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+
+    return storedUser
+      ? JSON.parse(storedUser)
+      : null;
+  });
+
+  useEffect(() => {
+    const refreshUser = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          "http://localhost:3000/dashboard",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          return;
+        }
+
+        setCurrentUser(data.user);
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify(data.user)
+        );
+      } catch (error) {
+        console.log(
+          "Could not refresh user:",
+          error
+        );
+      }
+    };
+
+    refreshUser();
+  }, []);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -26,23 +80,44 @@ function App() {
 
         <div className="navbar-links">
           {currentUser?.role === "ADMIN" && (
-            <Link to="/admin">Admin</Link>
+            <Link to="/admin">
+              Admin
+            </Link>
           )}
 
           {!currentUser && (
             <>
-              <Link to="/register">Register</Link>
-              <Link to="/login">Login</Link>
+              <Link to="/register">
+                Register
+              </Link>
+
+              <Link to="/login">
+                Login
+              </Link>
             </>
           )}
 
           {currentUser && (
             <>
-              <Link to="/dashboard">Dashboard</Link>
-              <Link to="/listings">Meals</Link>
-              <Link to="/create-listing">Create Meal</Link>
-              <Link to="/provider-requests">Provider Requests</Link>
-              <Link to="/my-requests">My Requests</Link>
+              <Link to="/dashboard">
+                Dashboard
+              </Link>
+
+              <Link to="/listings">
+                Meals
+              </Link>
+
+              <Link to="/create-listing">
+                Create Meal
+              </Link>
+
+              <Link to="/provider-requests">
+                Provider Requests
+              </Link>
+
+              <Link to="/my-requests">
+                My Requests
+              </Link>
             </>
           )}
         </div>
@@ -50,8 +125,19 @@ function App() {
         <div className="navbar-user">
           {currentUser ? (
             <>
-              <span>{currentUser.name}</span>
-              <button onClick={handleLogout}>Logout</button>
+              <div className="navbar-user-info">
+                <span className="navbar-user-name">
+                  {currentUser.name}
+                </span>
+
+                <span className="navbar-points">
+                  ⭐ {currentUser.credits ?? 0} Points
+                </span>
+              </div>
+
+              <button onClick={handleLogout}>
+                Logout
+              </button>
             </>
           ) : (
             <span>Guest</span>
@@ -60,16 +146,59 @@ function App() {
       </nav>
 
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-listing" element={<CreateListing />} />
-        <Route path="/listings" element={<Listings />} />
-        <Route path="/provider-requests" element={<ProviderRequests />} />
-        <Route path="/my-requests" element={<MyRequests />} />
-        <Route path="*" element={<h1 className="page">Page Not Found</h1>} />
+        <Route
+          path="/"
+          element={<Home />}
+        />
+
+        <Route
+          path="/admin"
+          element={<AdminDashboard />}
+        />
+
+        <Route
+          path="/register"
+          element={<Register />}
+        />
+
+        <Route
+          path="/login"
+          element={<Login />}
+        />
+
+        <Route
+          path="/dashboard"
+          element={<Dashboard />}
+        />
+
+        <Route
+          path="/create-listing"
+          element={<CreateListing />}
+        />
+
+        <Route
+          path="/listings"
+          element={<Listings />}
+        />
+
+        <Route
+          path="/provider-requests"
+          element={<ProviderRequests />}
+        />
+
+        <Route
+          path="/my-requests"
+          element={<MyRequests />}
+        />
+
+        <Route
+          path="*"
+          element={
+            <h1 className="page">
+              Page Not Found
+            </h1>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 function Register() {
   const [formData, setFormData] = useState({
@@ -8,6 +9,8 @@ function Register() {
   });
 
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -19,59 +22,163 @@ function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("http://localhost:3000/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    });
+    setLoading(true);
+    setMessage("");
+    setSuccess(false);
 
-    const data = await response.json();
+    try {
+      const response = await fetch(
+        "http://localhost:3000/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
-    setMessage(data.message);
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.message || "Registration failed");
+        setLoading(false);
+        return;
+      }
+
+      setSuccess(true);
+      setMessage(
+        "Account created successfully! You start with 5 points."
+      );
+
+      setFormData({
+        name: "",
+        email: "",
+        password: "",
+      });
+
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+      setMessage("Could not connect to the server");
+      setLoading(false);
+    }
   };
 
   return (
-    <div style={{ padding: "24px" }}>
-      <h1>Register</h1>
+    <div className="auth-page">
+      <div className="auth-card">
+        <div className="auth-form-side">
+          <span className="home-kicker">
+            Join the community
+          </span>
 
-      <form onSubmit={handleSubmit}>
-        <input
-          name="name"
-          placeholder="Name"
-          value={formData.name}
-          onChange={handleChange}
-        />
+          <h1>Create your UniBite account</h1>
 
-        <br />
-        <br />
+          <p className="auth-intro">
+            Share meals, discover food nearby and help reduce
+            food waste.
+          </p>
 
-        <input
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-        />
+          <div className="starting-points-box">
+            <span>🎁</span>
 
-        <br />
-        <br />
+            <div>
+              <strong>Start with 5 points</strong>
+              <p>
+                Every new UniBite member receives 5 points to
+                get started.
+              </p>
+            </div>
+          </div>
 
-        <input
-          name="password"
-          type="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-        />
+          <form
+            onSubmit={handleSubmit}
+            className="auth-form"
+          >
+            <div className="auth-field">
+              <label>Name</label>
 
-        <br />
-        <br />
+              <input
+                type="text"
+                name="name"
+                placeholder="Your name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </div>
 
-        <button type="submit">Register</button>
-      </form>
+            <div className="auth-field">
+              <label>Email</label>
 
-      <p>{message}</p>
+              <input
+                type="email"
+                name="email"
+                placeholder="you@example.com"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <div className="auth-field">
+              <label>Password</label>
+
+              <input
+                type="password"
+                name="password"
+                placeholder="Create a password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="auth-submit-button"
+              disabled={loading}
+            >
+              {loading
+                ? "Creating account..."
+                : "Create Account"}
+            </button>
+          </form>
+
+          {message && (
+            <p
+              className={
+                success
+                  ? "auth-success-message"
+                  : "message"
+              }
+            >
+              {message}
+            </p>
+          )}
+
+          <p className="auth-switch">
+            Already have an account?{" "}
+            <Link to="/login">Login</Link>
+          </p>
+        </div>
+
+        <div className="auth-image-side">
+          <img
+            src="/images/hero-food.jpg"
+            alt="Fresh food shared on UniBite"
+          />
+
+          <div className="auth-image-overlay">
+            <span>UniBite</span>
+
+            <h2>
+              Good food should be shared, not wasted.
+            </h2>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

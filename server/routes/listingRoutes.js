@@ -806,6 +806,7 @@ router.patch(
   async (req, res) => {
     try {
       const requestId = Number(req.params.id);
+
       const numericRating = Number(
         req.body.rating
       );
@@ -893,7 +894,7 @@ router.patch(
 
         return res.status(400).json({
           message:
-            "The 48-hour review period has expired. 1 point was deducted.",
+            "The 48-hour review period has expired. 1 additional point was deducted.",
         });
       }
 
@@ -929,6 +930,17 @@ router.patch(
             },
           },
         }),
+
+        prisma.user.update({
+          where: {
+            id: request.requesterId,
+          },
+          data: {
+            credits: {
+              increment: 1,
+            },
+          },
+        }),
       ]);
 
       res.json({
@@ -936,7 +948,7 @@ router.patch(
           providerCreditReward === 1
             ? ""
             : "s"
-        }.`,
+        }, and your 1 reservation point was returned.`,
         request: results[0],
       });
     } catch (error) {

@@ -130,56 +130,122 @@ function ProviderRequests() {
 
   return (
     <div className="page requests-container">
-      <h1>Provider Requests</h1>
+      <div className="requests-header">
+        <span className="home-kicker">Meals you shared</span>
+
+        <h1>Provider Requests</h1>
+
+        <p>
+          Manage requests for your meals and confirm whether each meal was
+          successfully collected.
+        </p>
+      </div>
 
       {message && <p className="message">{message}</p>}
 
       {requests.length === 0 ? (
-        <p>No provider requests found.</p>
+        <div className="empty-state">
+          <h2>No requests yet</h2>
+          <p>
+            When another student requests one of your meals, it will appear
+            here.
+          </p>
+        </div>
       ) : (
-        requests.map((request) => (
-          <div key={request.id} className="request-card">
-            <h3 className="request-title">
-              🍽 {request.listing?.title || "Unknown listing"}
-            </h3>
+        <div className="requests-list">
+          {requests.map((request) => (
+            <div key={request.id} className="request-card provider-request-card">
+              <div className="request-card-main">
+                <div>
+                  <span className="request-label">Meal</span>
 
-            <p className="request-info">
-              Requested by: {request.requester?.name || "Unknown user"}
-            </p>
+                  <h3 className="request-title">
+                    🍽 {request.listing?.title || "Unknown listing"}
+                  </h3>
 
-            <div
-              className={`status-badge status-${request.status
-                .toLowerCase()
-                .replace("_", "-")}`}
-            >
-              {request.status}
+                  <p className="request-info">
+                    Requested by{" "}
+                    <strong>
+                      {request.requester?.name || "Unknown user"}
+                    </strong>
+                  </p>
+
+                  {request.requester?.credits !== undefined && (
+                    <p className="request-info">
+                      Requester points:{" "}
+                      <strong>{request.requester.credits}</strong>
+                    </p>
+                  )}
+                </div>
+
+                <div
+                  className={`status-badge status-${request.status
+                    .toLowerCase()
+                    .replace("_", "-")}`}
+                >
+                  {request.status}
+                </div>
+              </div>
+
+              {request.status === "PENDING" && (
+                <div className="request-actions">
+                  <button onClick={() => approveRequest(request.id)}>
+                    Approve Request
+                  </button>
+
+                  <button
+                    className="danger-button"
+                    onClick={() => rejectRequest(request.id)}
+                  >
+                    Reject
+                  </button>
+                </div>
+              )}
+
+              {request.status === "APPROVED" && (
+                <>
+                  <div className="request-note">
+                    The portion has been reserved. Confirm what happened after
+                    the pickup time.
+                  </div>
+
+                  <div className="request-actions">
+                    <button onClick={() => markPickedUp(request.id)}>
+                      ✓ Mark Picked Up
+                    </button>
+
+                    <button
+                      className="danger-button"
+                      onClick={() => markNoShow(request.id)}
+                    >
+                      No Show
+                    </button>
+                  </div>
+                </>
+              )}
+
+              {request.status === "PICKED_UP" && (
+                <div className="request-complete">
+                  ✓ Meal successfully collected. The requester can now leave a
+                  review.
+                </div>
+              )}
+
+              {request.status === "NO_SHOW" && (
+                <div className="request-warning">
+                  The requester did not collect this meal and received the
+                  no-show penalty.
+                </div>
+              )}
+
+              {request.status === "REJECTED" && (
+                <div className="request-muted">
+                  This request was rejected.
+                </div>
+              )}
             </div>
-
-            {request.status === "PENDING" && (
-              <div className="button-row">
-                <button onClick={() => approveRequest(request.id)}>
-                  Approve
-                </button>
-
-                <button onClick={() => rejectRequest(request.id)}>
-                  Reject
-                </button>
-              </div>
-            )}
-
-            {request.status === "APPROVED" && (
-              <div className="button-row">
-                <button onClick={() => markPickedUp(request.id)}>
-                  Mark Picked Up
-                </button>
-
-                <button onClick={() => markNoShow(request.id)}>
-                  No Show
-                </button>
-              </div>
-            )}
-          </div>
-        ))
+          ))}
+        </div>
       )}
     </div>
   );
